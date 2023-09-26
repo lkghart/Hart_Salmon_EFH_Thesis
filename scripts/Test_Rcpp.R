@@ -1,0 +1,7 @@
+#install.packages("Rcpp")
+library(Rcpp)
+library(here)
+dir.work <- here("scripts")
+setwd(dir.work)
+sourceCpp("hello.cpp")
+hello()

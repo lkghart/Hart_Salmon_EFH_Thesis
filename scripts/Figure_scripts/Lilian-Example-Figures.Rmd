@@ -1,0 +1,345 @@
+---
+title: "Example Figures for Lilian"
+author: "Dr. Curry J. Cunningham"
+date: "2/24/2021"
+output:
+  html_document:
+    collapsed: no
+    fig_caption: yes
+    highlight: espresso
+    number_sections: yes
+    smooth_scroll: yes
+    theme: sandstone
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=TRUE, cache=FALSE, warning=TRUE)
+options(scipen=1, digits=4)
+# options(width=50, width.cutoff=50, digits = 6) 
+require(kintr)
+require(tidyverse)
+require(dplyr)
+require(here)
+require(viridis)
+# require(PBSmodelling)
+# require(MASS)
+# require(RColorBrewer)
+# require(stringr)
+# require(lubridate)
+require(pander)
+require(kableExtra)
+# require(ggthemes)
+# require(xlsx)
+# require(plotly)
+require(mgcv)
+require(equatiomatic)
+require(visreg)
+require(gratia)
+```
+
+# Background and Purpose
+
+The purpose of this script is to provide examples of how we can quickly generate figures showing the spatial distribution of survey observations for the BASIS Trawl Survey
+
+Examples will use ggplot, as we can easily use ggplot aesthetics to:
+
+- **Facet by year** or create separate panels for each year
+- **Scale** point size or color based on the log of catch per unit effort (CPUE)
+
+This script will also provide some useful examples of how we can join data objects together using intuitive functions from the tidyverse and dplyr series of R packages.
+
+# Load Data
+
+First, lets load the BASIS salmon observations
+```{r}
+basis <- read.csv(file=file.path(here(), "data", "IYSsockeyeCatch18.csv"), header=TRUE)
+```
+
+Lets take a look at the dataset
+```{r}
+kable(head(basis))
+```
+
+Note: We can also use the `str()` function to inspect the object
+```{r}
+str(basis)
+```
+
+One final way to inspect the data object is to use `View()`. This will open a new tab in your RStudio instance that lets you scroll through the data. But, **be careful** not to call this on the entire dataset, as this will cause your R instance to hang up. Instead `View(head(basis))` should work. 
+
+# Standardize Catch per Unit Effort (CPUE)
+
+One of the first steps will be to standardize the catch `weight` based on the amount of effort. Effort here is the `AreaSwept` by the surface trawl. I'm guessing this is in Km^2, but we can inquire with Ellen.
+
+Ok, to standardize we will create a new column called `wt.cpue`.
+
+```{r}
+basis$wt.cpue <- basis$Wt/basis$AreaSwept
+```
+
+# Data Visualization
+
+## Plotting CPUE as histograms
+
+Lets take a quick look at the `wt.cpue` variable (as a histogram by year).
+We will use `facet_wrap()` to generate separate panels for each year.
+And we have changed the fill color for our histogram bars changing the `fill=` argument, in our call to define the plot asthetics `aes()`.
+
+```{r}
+ggplot(data=basis, aes(x=wt.cpue, fill=year)) +
+              theme_linedraw() +
+              geom_histogram() +
+              facet_wrap(~year)
+```
+
+This is one of the nice things about `ggplot()`, we have a lot of latitude to define which attributes or variables (columns) from our dataframe are used to define different attributes of our figure.
+
+Oh no! We don't see much contrast, that is because are cpue observations are heavily right tailed.
+It is more common to look at cpue data in natural log space.
+
+Also I will add the `scales="free_y"` argument to `facet_wrap()` to allow the y, but not the x-axis, to vary for each panel.
+
+```{r}
+ggplot(data=basis, aes(x=log(wt.cpue), fill=year)) +
+              theme_linedraw() +
+              geom_histogram() +
+              facet_wrap(~year, scales="free_y")
+```
+
+## Plotting CPUE as Density Distributions
+
+We can easily change our `geom_` call to plot our data as density distributions instead of histograms.
+**NOTE:** these are a similar way to plot the data.
+
+```{r}
+ggplot(data=basis, aes(x=log(wt.cpue), fill=year)) +
+              theme_linedraw() +
+              # geom_histogram() +
+              geom_density() +
+              facet_wrap(~year, scales="free_y") +
+              ylab("I show relative density")
+```
+
+Or, instead of faceting by year, we could plot one panel with overlapping density distributions for each year. 
+To do so we will change `fill=year`, and use the `alpha=` argument to make the innerds of our density distribution partially transparent ( closer to zero is more transparent, closer to 1 is more opaque).
+
+We also need to add a grouping asthetic `group=` which tells ggplot that we want a separate density distribution for each year. 
+
+```{r}
+ggplot(data=basis, aes(x=log(wt.cpue), fill=year, group=year)) +
+              theme_linedraw() +
+              # geom_histogram() +
+              geom_density(alpha=0.25) +
+              # facet_wrap(~year, scales="free_y") +
+              ylab("I show relative density")
+```
+
+A little complicated and I don't like the color gradient, so I can use `scale_fill_xxx()` to change this. I like the viridis color palette
+
+```{r}
+ggplot(data=basis, aes(x=log(wt.cpue), fill=year, group=year)) +
+              theme_linedraw() +
+              # geom_histogram() +
+              geom_density(alpha=0.25) +
+              # facet_wrap(~year, scales="free_y") +
+              ylab("I show relative density") +
+              scale_fill_viridis()
+```
+
+Still a little jumbled, lets plot the distributio of annual CPUE as boxplots
+
+## Plotting CPUE as Boxplots
+
+To do so we will need to convert year to a factor type variable. This will ensure we have a separate boxplot for each year. 
+
+```{r}
+
+ggplot(data=basis, aes(x=factor(year), y=log(wt.cpue), fill=year)) +
+              theme_linedraw() +
+              scale_fill_viridis() +
+              geom_boxplot() +
+              xlab("Survey Year")
+```
+
+## Plotting Spatial Data
+
+So we have thoroughly explored plotting log(cpue) as distributions of variaous sorts, but we also want to look at these data across space.
+
+By setting the `x=` asthetic to longitude and the `y=` asthetic to the latitude, we can easily do so.
+We will plot points using `geom_point()` on an x-y grid, and color points based on the log(CPUE).
+
+```{r}
+ggplot(data=basis, aes(x=Lon, y=Lat, color=log(wt.cpue))) +
+              theme_linedraw() +
+              scale_color_viridis() +
+              geom_point() +
+              ggtitle("BASIS", subtitle="Sockeye Salmon")
+```
+
+Cool, but we should probably plot each year separately, using `facet_wrap()` again.
+```{r}
+ggplot(data=basis, aes(x=Lon, y=Lat, color=log(wt.cpue))) +
+              theme_linedraw() +
+              scale_color_viridis() +
+              geom_point() +
+              ggtitle("BASIS", subtitle="Sockeye Salmon") +
+              facet_wrap(~year)
+```
+
+**Note:** log(0) is undefined so zero catches are plotted as grey dots.
+
+## Plotting Spatial Data with a Basemap
+
+We can add land to this figure to make it a bit more useful in several ways.
+First we can use the `get_map()` function in the `ggmap` package to download the map layers for the landmass. 
+
+**Note: There are other ways to do so**
+
+To that function we specify the spatial extent of the map to download (i.e. left, right, bottom, top) in lon and lat references.
+
+```{r}
+left <- -180
+right <- -155
+bottom <- 52
+top <- 63
+require(ggmap)
+map.dat <- get_map(location=c(left, bottom,
+                              right, top),
+                   maptype='toner-lite', source='stamen', crop=TRUE)
+```
+
+
+Now that we have downloaded the map data, we can add the points for our survey observations as above.
+
+```{r}
+ggmap(map.dat) +
+        theme_linedraw() +  
+        geom_point(data=basis,
+                   aes(x=Lon, y=Lat, color=log(wt.cpue)), alpha=0.5) +
+        facet_wrap(~year) +
+        scale_color_viridis_c()
+```
+
+
+# Fitting a Generalized Additive Model (GAM) to Spatial Data
+
+Here, I provide a simple example of how to fit a generalized additive model (GAM) to the BASIS survey data.
+
+## GAM for average spatial pattern
+
+First, we will explore an example of describing the average spatial pattern.
+
+But first lets create a new object with just the non-zero CPUE's
+
+```{r}
+basis.pos.catch <- basis %>% filter(wt.cpue>0)
+```
+
+```{r}
+gam.1 <- gam(log(wt.cpue) ~ s(Lon,Lat), data=basis.pos.catch)
+```
+
+We can examine the output of the fitted model object `gam.1` using the `summary()` function.
+
+```{r}
+summary(gam.1)
+```
+
+And check if our residuals are normally distributed, which we want.
+The `resid()` function will extract the residuals from the fitted model, and the `hist()` function will plot a histogram of the residuals.
+```{r}
+resid.gam.1 <- resid(gam.1)
+hist(resid.gam.1)
+```
+
+### Plotting Lat and Lon effects separately
+
+Next, we can use `vis.gam()` to extract our the latitude x longitude effects.
+
+First, lets look at "partial plots" of each of the relationship between each of latitude and longitude and our response variable `log(wt.cpue)`. To do so we can use the `visreg()` function in the `visreg` package. 
+
+This is a super useful function for plotting outputs from a wide variety of fitted models.
+
+```{r}
+visreg(gam.1)
+```
+
+### Plotting the smoothed Lat x Lon interaction
+
+First, we can use the generic `plot()` function on our fitted GAM model object to plot the surface of the predicted lat x lon interaction.
+
+```{r}
+plot(gam.1)
+```
+
+Next, we can use the `vis.gam()` function to plot the smoothed interaction between latitude and longitude in a more user-friendly, and less abstruse, way. 
+
+Specifying `plot.type="contour"` will plot a contour plot (similar to a topo map) of the lat-lon interaction.
+```{r}
+vis.gam(gam.1, plot.type="contour", color="topo")
+```
+
+Specifying `plot.type="image"` will plot a 3D model.
+```{r}
+vis.gam(gam.1, plot.type="persp", color="topo", phi=60, theta=-50)
+```
+
+Adjusting `phi=` will change how the 3D plot is oriented toward the viewer, and `theta=` will change the rotation.
+
+```{r}
+vis.gam(gam.1, plot.type="persp", color="topo", phi=20, theta=-50)
+```
+
+```{r}
+vis.gam(gam.1, plot.type="persp", color="topo", phi=60, theta=-70)
+```
+
+## GAM for spatio-temporal pattern
+
+Next, we will fit a model that has separate lat X lon smoothes for each year. In effect this is approximating the average spatial pattern in each year separately. We do this by adding `by=year` to our call to create the smoothed interaction `s()`.
+
+```{r}
+gam.2 <- gam(log(wt.cpue) ~  s(Lon,Lat, by=year), data=basis.pos.catch)
+```
+
+And we can retreive the summary...
+```{r}
+summary(gam.2)
+```
+
+And of course plot our residuals ... looks good!
+```{r}
+hist(resid(gam.2))
+```
+
+### Plotting Annual Lat x Lon Smoothed Interactions
+
+```{r}
+vis.gam(gam.2, cond=list("year"=2002), color="topo", plot.type="contour", main=2002)
+vis.gam(gam.2, cond=list("year"=2008), color="topo", plot.type="contour", main=2008)
+vis.gam(gam.2, cond=list("year"=2018), color="topo", plot.type="contour", main=2018)
+```
+
+### Plotting clipped region with draw() function
+```{r}
+temp.gam <-  gam(log(wt.cpue) ~  te(Lon,Lat), data=basis.pos.catch)
+draw(temp.gam, residuals=TRUE)
+```
+
+
+```{r}
+require(maps)
+ak.map <- map_data("world") %>% dplyr::filter(long>-180, long<-130, lat>50, long<65)
+draw(gam.2, residuals=TRUE) + geom_polygon(data=ak.map, aes(x=long, y = lat, group = group), fill="brown", alpha=0.3)
+```
+
+```{r}
+require(rnaturalearth)
+usa <- ne_states("United States of America")
+ak <- subset(usa, name == "Alaska") #
+```
+
+
+
