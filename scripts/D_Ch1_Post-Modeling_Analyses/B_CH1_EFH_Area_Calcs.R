@@ -1,6 +1,8 @@
-### Chapter 1 EFH Area calculations ###
+### Chapter 1 Static EFH Area calculations ###
 # author: Lilian Hart
-# date last modified: 02/16/23
+# date last modified: 09/29/23
+# This script calculates the differences in area between official EFH shapefiles
+# and concave hull polygons estimated from static (Model 1) model predictions.
 
 require(tidyverse)
 require(dplyr)
@@ -34,7 +36,7 @@ for (i in 1:4) {
   
   # Load in EFH predictions and EFH shapefiles
   gam1 <- readRDS(file.path(dir.work, paste0(spec, "_GAM_Mod1_EFH.rds"))) 
-  vast1 <- readRDS(file.path(dir.work, paste0(sSpec, "_VAST_Mod1_EFH.rds")))
+  vast1 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_Mod1_EFH.rds")))
   offic <- readRDS(file.path(dir.work, paste0("official_", spec, "_EFH_clipped.rds")))
   
   # Convert to sf objects

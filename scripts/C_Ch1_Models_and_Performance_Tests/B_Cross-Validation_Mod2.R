@@ -1,14 +1,14 @@
-### Chapter 1 K-fold Cross Validation Model 4 ###
+### Chapter 1 K-fold Cross Validation, Model 2 ###
 # authors: Lilian Hart and Curry Cunningham
 # With a great deal of contribution from James Thorson's tutorial in the VAST wiki.
 # Tutorial: https://github.com/James-Thorson-NOAA/VAST/wiki/Crossvalidation
 
-# Date last edited: 03/20/23
+# Date last edited: 09/29/23
 
 # Set species
 # Note: if running spatiotemporal models for sockeye, change k value to k = 8
-Spec <- "Sockeye"
-spec <- "sockeye"
+Spec <- "Pink"
+spec <- "pink"
 
 ## Load packages
 library(TMB)
@@ -20,12 +20,13 @@ library(mgcv)
 library(tweedie)
 
 ## Set local working directory (change for your machine)
-setwd(here("data", "Chapter_1_CrossVal", spec, "Mod_4"))
-dir.dat <- here("data", "Chapter_1_RDSModels")
+dir.res <- here("data", "Chapter_1_RDS", "Chapter_1_CrossVal", spec, "Mod_2")
+dir.create(dir.res, recursive=TRUE)
+dir.dat <- here("data", "Chapter_1_RDS")
+setwd(dir.res)
 
 ## Load data
-#example = load_example( data_set="EBS_pollock" )
-dat <- readRDS(file.path(dir.dat, "V4_basis_subset.rds"))
+dat <- readRDS(file.path(dir.dat, "basis_subset.rds"))
 dat$fSampleYear <- as.factor(dat$SampleYear)
 species.dat <- subset(dat, dat$CommonName == paste(Spec, "Salmon"))
 # Missing values already filtered out of dataset
@@ -43,6 +44,9 @@ treat_nonencounter_as_zero <- TRUE
 FieldConfig <- array("IID", dim=c(3,2), 
                      dimnames=list(c("Omega","Epsilon","Beta"),
                                    c("Component_1", "Component_2")))
+#Turn off spatiotemporal components
+FieldConfig[2,1] <- 0
+FieldConfig[2,2] <- 0
 
 # Make settings (turning off bias.correct to save time for example)
 settings <- make_settings(n_x = n_x, 
@@ -54,12 +58,12 @@ settings <- make_settings(n_x = n_x,
                           ObsModel=ObsModel,
                           treat_nonencounter_as_zero=treat_nonencounter_as_zero,
                           FieldConfig = FieldConfig,
-                          RhoConfig = c(0,0,2,2),
+                          RhoConfig = c(0,0,0,0),
                           Version = "VAST_v14_0_1")
 
 # Fit the model and a first time and record MLE
 # Read input grid
-user_region <- readRDS(file.path(dir.dat, "user_region2.rds"))
+user_region <- readRDS(file.path(dir.dat, "user_region.rds"))
 
 # Run model
 mod_fit <- fit_model(settings = settings, 
@@ -113,12 +117,10 @@ for( fI in 1:n_fold ) {
   
   # Fit Model to Training Data Set
   # GAM Model #1 Structure: Average spatial field
-  temp.fit <- gam(TotalCatchNum  ~ te(EQ.Longitude,EQ.Latitude, bs = "tp", k = 8,
-                                      m = 1) + fSampleYear + 
-                    te(EQ.Longitude,EQ.Latitude,SampleYear, d=c(2,1), 
-                       bs=c("tp","cr"), k = 8, m = 1) + 
-                    offset(log(Effort_area_km2)),
-                  family=tw(link = "log"), data = temp.train)
+  temp.fit <- gam(TotalCatchNum ~ te(EQ.Longitude,EQ.Latitude, bs = "tp", k = 9, 
+                         m = 1) +
+        fSampleYear + offset(log(Effort_area_km2)),
+      family=tw(link = "log"), data = temp.train)
   
   # Predict Testing Data Set
   pred.test <- predict(temp.fit, newdata=temp.test, type="response")
@@ -160,6 +162,6 @@ for( fI in 1:n_fold ) {
 x <- sum( prednll_vast )
 y <- sum( prednll_gam)
 res <- c("vast:",x,"gam:",y)
-saveRDS(res, paste0("nll_", spec, "_results"))
+saveRDS(res, paste0("nll_", spec, "_results.rds"))
 
 

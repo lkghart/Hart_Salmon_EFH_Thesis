@@ -1,6 +1,6 @@
 ### Chapter 1 GAM Output Pulling Script ###
 # author: Lilian Hart
-# last modified: 12/15/2022
+# last modified: 09/29/23
 # Note: Can load RDS file outputs in second section of code
 
 require(tidyverse)
@@ -10,7 +10,7 @@ require(mgcv)
 
 #### Pull data ####
 spec_list <- c("chinook", "chum", "pink", "sockeye")
-dir.work <- here("data", "Chapter_1_RDSModels")
+dir.work <- here("data", "Chapter_1_RDS")
 setwd(dir.work)
 
 for (i in spec_list){
@@ -18,8 +18,6 @@ for (i in spec_list){
   # Load fitted models
   mod1 <- readRDS(file.path(dir.work, paste0(species,"_gam_mod1.rds")))
   mod2 <- readRDS(file.path(dir.work, paste0(species,"_gam_mod2.rds")))
-  # For Chinook, I copied the mod1 file and renamed as mod3 in order to
-  # help this loop to work. So ignore mod3 metrics.
   mod3 <- readRDS(file.path(dir.work, paste0(species,"_gam_mod3.rds")))
   mod4 <- readRDS(file.path(dir.work, paste0(species,"_gam_mod4.rds")))
 

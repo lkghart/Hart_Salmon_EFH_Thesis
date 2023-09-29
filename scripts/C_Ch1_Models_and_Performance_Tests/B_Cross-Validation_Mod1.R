@@ -1,9 +1,9 @@
-### Chapter 1 K-fold Cross Validation Model 1 ###
+### Chapter 1 K-fold Cross Validation, Model 1 ###
 # authors: Lilian Hart and Curry Cunningham
 # With a great deal of contribution from James Thorson's tutorial in the VAST wiki.
 # Tutorial: https://github.com/James-Thorson-NOAA/VAST/wiki/Crossvalidation
 
-# Date last edited: 03/06/23
+# Date last edited: 09/29/23
 
 # Set species
 Spec <- "Chinook"
@@ -19,12 +19,14 @@ library(mgcv)
 library(tweedie)
 
 ## Set local working directory (change for your machine)
-setwd(here("data", "Chapter_1_CrossVal", spec, "Mod_1"))
-dir.dat <- here("data", "Chapter_1_RDSModels")
+dir.res <- here("data", "Chapter_1_RDS", "Chapter_1_CrossVal", spec, "Mod_1")
+dir.create(dir.res, recursive=TRUE)
+setwd(dir.res)
+dir.dat <- here("data", "Chapter_1_RDS")
 
 ## Load data
 #example = load_example( data_set="EBS_pollock" )
-dat <- readRDS(file.path(dir.dat, "V4_basis_subset.rds"))
+dat <- readRDS(file.path(dir.dat, "basis_subset.rds"))
 species.dat <- subset(dat, dat$CommonName == paste(Spec, "Salmon"))
 # Missing values already filtered out of dataset
 
@@ -60,7 +62,7 @@ settings <- make_settings(n_x = n_x,
 
 # Fit the model and a first time and record MLE
 # Read input grid
-user_region <- readRDS(file.path(dir.dat, "user_region2.rds"))
+user_region <- readRDS(file.path(dir.dat, "user_region.rds"))
 
 # Run model
 mod_fit <- fit_model(settings = settings, 
@@ -146,7 +148,7 @@ for( fI in 1:n_fold ) {
   # logLik(temp.fit);trial.probs
   # Check! Yes, we can replicate log Likelihood of the original fit.
   
-  # Calculate negative logLikelihood of observations in the testing dataset,
+  # Calculate negative log Likelihood of observations in the testing dataset,
   #   given the predicted values for the testing dataset, and fitted model
   #     power term (temp.p) and disperstion estimate (temp.phi)
   prednll_gam[fI] <- -1*sum(log(tweedie::dtweedie(y=temp.test$TotalCatchNum, power=temp.p, 
@@ -159,6 +161,6 @@ for( fI in 1:n_fold ) {
 x <- sum( prednll_vast )
 y <- sum( prednll_gam)
 res <- c("vast:",x,"gam:",y)
-saveRDS(res, paste0("nll_", spec, "_results"))
+saveRDS(res, paste0("nll_", spec, "_results.rds"))
 
 

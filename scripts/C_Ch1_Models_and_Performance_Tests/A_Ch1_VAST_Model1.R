@@ -107,6 +107,7 @@ if(fit == TRUE){
   
 } else {
   print("Model is fitted. Loading RDS files.")
+  dir.work <- here("data", "Chapter_1_RDS")
   mod_fit <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod1.rds")))
   mod_fit_0 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod1_null.rds")))
 }

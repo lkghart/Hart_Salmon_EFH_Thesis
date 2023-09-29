@@ -1,9 +1,9 @@
-### Chapter 1 K-fold Cross Validation Model 3/4 ###
+### Chapter 1 K-fold Cross Validation, Model 4 ###
 # authors: Lilian Hart and Curry Cunningham
 # With a great deal of contribution from James Thorson's tutorial in the VAST wiki.
 # Tutorial: https://github.com/James-Thorson-NOAA/VAST/wiki/Crossvalidation
 
-# Date last edited: 03/15/23
+# Date last edited: 09/29/23
 
 # Set species
 # Note: if running spatiotemporal models for sockeye, change k value to k = 8
@@ -20,12 +20,13 @@ library(mgcv)
 library(tweedie)
 
 ## Set local working directory (change for your machine)
-setwd(here("data", "Chapter_1_CrossVal", spec, "Mod_3"))
-dir.dat <- here("data", "Chapter_1_RDSModels")
+dir.res <- here("data", "Chapter_1_RDS", "Chapter_1_CrossVal", spec, "Mod_4")
+dir.create(dir.res, recursive=TRUE)
+dir.dat <- here("data", "Chapter_1_RDS")
+setwd(dir.res)
 
 ## Load data
-#example = load_example( data_set="EBS_pollock" )
-dat <- readRDS(file.path(dir.dat, "V4_basis_subset.rds"))
+dat <- readRDS(file.path(dir.dat, "basis_subset.rds"))
 dat$fSampleYear <- as.factor(dat$SampleYear)
 species.dat <- subset(dat, dat$CommonName == paste(Spec, "Salmon"))
 # Missing values already filtered out of dataset
@@ -59,7 +60,7 @@ settings <- make_settings(n_x = n_x,
 
 # Fit the model and a first time and record MLE
 # Read input grid
-user_region <- readRDS(file.path(dir.dat, "user_region2.rds"))
+user_region <- readRDS(file.path(dir.dat, "user_region.rds"))
 
 # Run model
 mod_fit <- fit_model(settings = settings, 
@@ -161,6 +162,6 @@ x <- sum( prednll_vast )
 # y <- sum( prednll_gam)
 y <- 1
 res <- c("vast:",x,"gam:",y)
-saveRDS(res, paste0("nll_", spec, "_results"))
+saveRDS(res, paste0("nll_", spec, "_results.rds"))
 
 

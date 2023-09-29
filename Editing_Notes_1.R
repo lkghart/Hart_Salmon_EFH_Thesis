@@ -8,11 +8,9 @@ Important! Changing Model 3 to Model 4 to align with paper.
 
 Chinook_CH1_GAM_Predictions.rds to Ch1_GAM_Predictions_Response.rds
 
-### Note to self for Monday ###
-- Finish the Ch1_VAST modeling edits. Remember to switch names and file names of
-Models 3 and 4.
+spec_VAST_CV.rds changed to spec,"_VAST_dynamic_model_CV.rds"))
 
-- Then can finish updating EFH calculation script. Run model 1 as example.
-Also make sure to change dynamic model to number 4.
+### Note to self for Monday ###
+- Prediction surface script
 
 - Then be careful and pay attention when editing names in cross validation scripts.

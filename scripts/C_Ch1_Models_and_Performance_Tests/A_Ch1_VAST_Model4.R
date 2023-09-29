@@ -1,6 +1,6 @@
-### Ch1 VAST Model 2 ###
+### VAST Model 4 ###
 ## author: Lilian Hart
-# Last edited 09/29/23
+# Last edited 09/29/2023
 
 require(tidyverse)
 require(dplyr)
@@ -12,12 +12,17 @@ require(units)
 require(beepr)
 
 #### Setup ####
-fit <- TRUE
 species <- "Chinook Salmon"
+spec <- "chinook"
 
-if (fit == TRUE){
+fit <- TRUE
 
+if(fit == TRUE){
   species <- species
+  dir.data <- here("data", "BASIS")
+  dir.work <- here("data", "Chapter_1_RDS")
+  dir.vast <- here("data", "Chapter_1_RDS", "VAST", spec, "Mod_4")
+  dir.create(dir.vast, recursive=TRUE)
   
   # Number of knots (i.e. spatial complexity)
   n_x <- 300
@@ -25,19 +30,10 @@ if (fit == TRUE){
   fine_scale <- TRUE
   
   ObsModel=c(2,0) #Standard delta model with gamma distribution
-  
   treat_nonencounter_as_zero <- TRUE
   
-  # Workflow =====================================================================
-  dir.data <- here("data", "BASIS")
-  dir.work <- here("data","Chapter_1_RDS")
-  dir.vast <- here("data", "Chapter_1_RDS", "VAST", spec, "Mod_2")
-  dir.create(dir.vast, recursive=TRUE)
-  
-  dir.R <- here("R")
-  
   # Read in Compiled Basis Data ==================================================
-  full_data <- readRDS(file.path(dir.work, "basis_subset.rds"))
+  full_data <- readRDS(file.path(dir.work,"basis_subset.rds"))
   species.dat <- subset(full_data, full_data$CommonName == species)
   
   # Filter out observations with missing values
@@ -45,16 +41,11 @@ if (fit == TRUE){
                                      !is.na(EQ.Latitude),
                                      !is.na(Effort_area_km2),
                                      !is.na(TotalCatchNum))
-  
-  # Plot Data ====================================================================
-  
+  # Configure model ====================================================================
   setwd(dir.vast)
   FieldConfig <- array("IID", dim=c(3,2), 
                        dimnames=list(c("Omega","Epsilon","Beta"),
                                      c("Component_1", "Component_2")))
-  #Turn off spatiotemporal components
-  FieldConfig[2,1] <- 0
-  FieldConfig[2,2] <- 0
   
   settings <- make_settings(n_x = n_x, 
                             Region=Region,
@@ -80,10 +71,9 @@ if (fit == TRUE){
                        b_i = as_units(temp.dat$TotalCatchNum, 'count'), 
                        a_i = as_units(temp.dat$Effort_area_km2, 'km^2'),
                        input_grid = user_region); beep(sound=2)
+  saveRDS(mod_fit, file.path(dir.work, paste0(spec, "_VAST_mod4.rds")))
   
-  saveRDS(mod_fit, file.path(dir.work, paste0(spec, "_VAST_mod2.rds")))
-  
-  ## Create null model
+  ##Create null model ##
   settings0 <- settings
   settings0$FieldConfig = matrix( c(0,0,0,0,"IID","IID"), byrow=TRUE, ncol=2 )
   settings0$RhoConfig[c("Beta1","Beta2")] = 3
@@ -98,20 +88,21 @@ if (fit == TRUE){
                     getsd = FALSE,
                     newtonsteps = 1)
   
-  saveRDS(fit0, file.path(dir.work, paste0(spec, "_VAST_mod2_null.rds")))
+  saveRDS(fit0, file.path(dir.work, paste0(spec, "_VAST_mod3_null.rds")))
   
+  # Plot Output ==================================================================
   plot(mod_fit); beep(sound=4)
-  ## Get AIC estimate
   mod_fit$parameter_estimates$AIC
   
 } else {
+  dir.work <- here("data","Chapter_1_RDS")
   print("Model is fitted. Loading RDS files.")
-  dir.work <- here("data", "Chapter_1_RDS")
-  mod_fit <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod2.rds")))
-  mod_fit_0 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod2_null.rds")))
+  mod_fit <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod4.rds")))
+  mod_fit_0 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod4_null.rds")))
 }
 
-# Plot Output ==================================================================
+
 
 # Reset working directory ======================================================
 setwd(here())
+  

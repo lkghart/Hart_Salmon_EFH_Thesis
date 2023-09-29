@@ -1,6 +1,6 @@
-### Clip official EFH to user region ###
+### Clip official EFH to AOI/user region ###
 # author: Lilian Hart
-# date last edited: 02/17/23
+# date last edited: 09/29/23
 
 require(sp)
 require(tidyverse)
@@ -15,14 +15,18 @@ library(rnaturalearth)
 library(rnaturalearthhires)
 library(rnaturalearthdata)
 
-dir.data <- file.path("~/Documents/AK_Shapefiles/WGS_1984")
-dir.work <- here("data", "Chapter_1_RDSModels")
+# Local directory of official EFH shapefiles 
+dir.data <- file.path("~/Documents/AK_Shapefiles/WGS_1984") 
+
+dir.work <- here("data", "Chapter_1_RDS")
 dir.efh <- here("data", "Chapter_1_EFH")
 
 Species <- c("Chinook", "Chum", "Pink", "Sockeye")
 species <- c("chinook", "chum", "pink", "sockeye")
+
 # Load in user region polygon 
-aoi <- readRDS(file.path(dir.work, "region2_polygon.rds"))
+aoi <- readRDS(file.path(dir.work, "AOI_polygon.rds"))
+aoi_sf <- st_as_sf(aoi,coords = c("long", "lat"), crs = 4326 )
 
 setwd(dir.efh)
 
@@ -37,10 +41,10 @@ for (i in 1:4){
   # Set CRS or transform from geographic coordinate system (WGS84) to projected
   # (flat) coordinate system of UTM zone 33 N
   x <- st_transform(spec_shp, 32633)
-  aoi <- st_transform(aoi, 32633)
+  st_crs(aoi_sf) <- st_crs(x)
   
   # Clip using the sf intersect method
-  spec_subset <- st_intersection(x, aoi)
+  spec_subset <- st_intersection(x, aoi_sf)
   # Save to RDS
   saveRDS(spec_subset, paste0("official_", spec, "_EFH_clipped.rds"))
 }
@@ -58,9 +62,9 @@ sockeye <- readRDS("official_sockeye_EFH_clipped.rds")
 # Map
 ggplot() +
   geom_sf(data = ak) +
-  # geom_sf(data = chinook, color = "blue", fill = NA) +
+  geom_sf(data = chinook, color = "blue", fill = NA) +
   # geom_sf(data = chum, color = "white", fill = NA) +
-  geom_sf(data = spec_shp, color = "red", fill = "red") +
+  #geom_sf(data = spec_shp, color = "red", fill = "red") +
   # geom_sf(data = sockeye, color = "orange", fill = NA) +
   # geom_sf(data = aoi, color = "red", fill = NA) 
   coord_sf(crs = st_crs(3338), xlim = c(-1250000, -100000),
