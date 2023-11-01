@@ -12,8 +12,8 @@ require(units)
 require(beepr)
 
 #### Setup ####
-species <- "Chinook Salmon"
-spec <- "chinook"
+species <- "Chum Salmon"
+spec <- "chum"
 
 fit <- TRUE
 

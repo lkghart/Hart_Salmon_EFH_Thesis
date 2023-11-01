@@ -13,8 +13,8 @@ require(gratia)
 require(beepr)
 
 #### Setup ####
-species <- "Chinook Salmon"
-spec <- "chinook"
+species <- "Chum Salmon"
+spec <- "chum"
 
 fit <- TRUE
 
@@ -30,7 +30,7 @@ if(fit == TRUE){
   # Save factor versions of Sample Year 
   dat$fSampleYear <- as.factor(dat$SampleYear)
   
-  #### Four Abundance models - Chinook ####
+  #### Four Abundance models  ####
   ## Model 1: Average spatial field 
   mod1 <- gam(TotalCatchNum ~ te(EQ.Longitude,EQ.Latitude, bs = "tp", 
                                  k = 9, m = 1) +
@@ -60,14 +60,12 @@ if(fit == TRUE){
   # Model 4: Spatiotemporal model with independent spatial fields
   # Error message:
   # Model has more coefficients than data
-  # mod4 <- gam(TotalCatchNum ~ te(EQ.Longitude,EQ.Latitude, bs = "tp", k = 9) +
-  #              fSampleYear +
-  #               te(EQ.Longitude,EQ.Latitude, by = fSampleYear, bs = "tp", k = 9) +
-  #               offset(log(Effort_area_km2)),
-  #             family=tw(link = "log"), data = dat); beep(sound=8)
-  # saveRDS(mod4, paste0(spec,"_gam_mod4.rds"))
-
-
+  mod4 <- gam(TotalCatchNum ~ te(EQ.Longitude,EQ.Latitude, bs = "tp", k = 9) +
+               fSampleYear +
+                te(EQ.Longitude,EQ.Latitude, by = fSampleYear, bs = "tp", k = 9) +
+                offset(log(Effort_area_km2)),
+              family=tw(link = "log"), data = dat); beep(sound=8)
+  saveRDS(mod4, paste0(spec,"_gam_mod4.rds"))
 
 } else {
   print("Models are already fitted :)")

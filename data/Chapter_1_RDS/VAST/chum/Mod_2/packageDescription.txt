@@ -1,0 +1,96 @@
+Package: VAST
+Type: Package
+Title: Vector-Autoregressive Spatio-Temporal (VAST) Model
+Version: 3.10.1
+Date: 2022-11-18
+Authors@R: c(person(given = "James", family = "Thorson", role =
+        c("aut", "cre"), email = "James.Thorson@noaa.gov", comment =
+        c(ORCID = "0000-0001-7415-1010")), person(given="Cole",
+        family="Monnahan", role="ctb", email="Cole.Monnahan@noaa.gov")
+        )
+Description: VAST is an R package for conducting spatio-temporal
+        analysis of data from multiple categories (species, sizes,
+        etc.), and includes both spatial and spatio-temporal variation
+        in density for each category, with either factor-analysis or
+        autoregressive correlations among categories, with derived
+        calculation of abundance indices, center-of-gravity, and
+        area-occupied.
+Imports: abind, effects, INLA, stats, ThorsonUtilities, utils, remotes,
+        devtools
+Depends: TMB (>= 1.8.0), FishStatsUtils (>= 2.12.1), R (>= 3.5.0)
+Suggests: testthat, knitr, rmarkdown, pscl, tweedie, mgcv, lme4
+Remotes: james-thorson-NOAA/FishStatsUtils, james-thorson/utilities
+Additional_repositories: https://inla.r-inla-download.org/R/stable
+License: file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.2.2
+ByteCompile: true
+URL: http://github.com/James-Thorson-NOAA/VAST
+BugReports: http://github.com/James-Thorson-NOAA/VAST/issues
+VignetteBuilder: knitr
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: VAST
+RemoteUsername: james-thorson
+RemoteRef: ae94aaa81db4996e4355ded1e947d33c2140f0c8
+RemoteSha: ae94aaa81db4996e4355ded1e947d33c2140f0c8
+GithubRepo: VAST
+GithubUsername: james-thorson
+GithubRef: ae94aaa81db4996e4355ded1e947d33c2140f0c8
+GithubSHA1: ae94aaa81db4996e4355ded1e947d33c2140f0c8
+NeedsCompilation: no
+Packaged: 2023-02-09 00:52:37 UTC; lilianhart
+Author: James Thorson [aut, cre]
+        (<https://orcid.org/0000-0001-7415-1010>), Cole Monnahan [ctb]
+Maintainer: James Thorson <James.Thorson@noaa.gov>
+Built: R 4.2.2; ; 2023-02-09 00:52:40 UTC; unix
+
+-- File: /Library/Frameworks/R.framework/Versions/4.2/Resources/library/VAST/Meta/package.rds 
+Package: FishStatsUtils
+Type: Package
+Title: Utilities (shared code and data) for FishStats spatio-temporal
+        modeling toolbox
+Version: 2.12.1
+Date: 2022-11-18
+Authors@R: c(person(given = "James", family = "Thorson", role =
+        c("aut", "cre"), email = "James.Thorson@noaa.gov", comment =
+        c(ORCID = "0000-0001-7415-1010")) )
+Description: FishStatsUtils contains utilities (shared code and data)
+        used by multiple packages (VAST, SpatialDeltaGLMM, MIST,
+        Spatial_FA, SpatialDFA, surplus_production, EOFR) that are
+        designed for spatio-temporal analysis of ecological data.
+Imports: abind, alphahull, corpcor, corrplot, DHARMa, ecodist,
+        fastcluster, INLA, plotrix, RANN, sf, raster, reshape2, rgdal,
+        rnaturalearth, rnaturalearthdata, seriation, shape, sp, stats,
+        TMB (>= 1.8.0), TMBhelper (>= 1.4.0), utils, viridisLite,
+        spacetime, gstat
+Depends: R (>= 3.5.0), units, marginaleffects
+Enhances: tidyr
+Suggests: testthat
+Remotes: kaskr/TMB_contrib_R/TMBhelper
+Additional_repositories: https://inla.r-inla-download.org/R/stable
+License: GPL-3
+LazyData: yes
+BuildVignettes: yes
+Encoding: UTF-8
+RoxygenNote: 7.2.3
+URL: http://github.com/james-thorson-NOAA/FishStatsUtils
+BugReports: http://github.com/james-thorson-NOAA/FishStatsUtils/issues
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: FishStatsUtils
+RemoteUsername: james-thorson-NOAA
+RemoteRef: HEAD
+RemoteSha: eb88234d1368e553e89ca9436e87c80f32e40afb
+GithubRepo: FishStatsUtils
+GithubUsername: james-thorson-NOAA
+GithubRef: HEAD
+GithubSHA1: eb88234d1368e553e89ca9436e87c80f32e40afb
+NeedsCompilation: no
+Packaged: 2023-02-09 00:52:04 UTC; lilianhart
+Author: James Thorson [aut, cre]
+        (<https://orcid.org/0000-0001-7415-1010>)
+Maintainer: James Thorson <James.Thorson@noaa.gov>
+Built: R 4.2.2; ; 2023-02-09 00:52:16 UTC; unix
+
+-- File: /Library/Frameworks/R.framework/Versions/4.2/Resources/library/FishStatsUtils/Meta/package.rds 

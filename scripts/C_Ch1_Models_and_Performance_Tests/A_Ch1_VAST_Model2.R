@@ -13,7 +13,8 @@ require(beepr)
 
 #### Setup ####
 fit <- TRUE
-species <- "Chinook Salmon"
+species <- "Chum Salmon"
+spec <- "chum"
 
 if (fit == TRUE){
 

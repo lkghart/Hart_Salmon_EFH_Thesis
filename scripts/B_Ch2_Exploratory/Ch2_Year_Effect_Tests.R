@@ -1,6 +1,6 @@
 ### Chapter 2 Year Effect Tests ###
 # author: Lilian Hart
-# date last modified: 06/21/23
+# date last modified: 10/31/23
 
 require(dplyr)
 require(tidyverse)
@@ -10,13 +10,12 @@ require(ggplot2)
 
 # Load data
 dir.dat <- here::here("data", "BASIS")
-dir.mods <- here::here("data", "Chapter_1_RDSModels")
-dir.out <- here::here("data", "Chapter_1_RDS")
+dir.mods <- here::here("data", "Chapter_1_RDS")
 dat <- readRDS(file=paste0(dir.dat, "/Ch2_dataframe.rds"))
 dat$fSampleYear <- as.factor(dat$SampleYear)
 
 #Ch1 dataframe
-og <- readRDS(file.path(dir.dat,"V4_basis_subset.rds"))
+og <- readRDS(file.path(dir.dat,"basis_subset.rds"))
 og$fSampleYear <- as.factor(og$SampleYear)
 
 # Load Ch1 models 

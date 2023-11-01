@@ -1,6 +1,6 @@
 ### Chapter 2 Correlation Tests ###
 # author: Lilian Hart
-# date last modified: 05/17/23
+# date last modified: 10/31/23
 
 require(dplyr)
 require(tidyverse)
@@ -12,6 +12,7 @@ require(ggcorrplot)
 dir.dat <- here::here("data", "BASIS")
 dat <- readRDS(file=paste0(dir.dat, "/Ch2_dataframe.rds"))
 enviro <- readRDS(file=paste0(dir.dat, "/Ch2_enviro_covariates.rds"))
+
 # Subset by species to test MLD correlations
 chinook <- dat %>% filter(CommonName == "Chinook Salmon")
 c_e <- chinook %>% dplyr::select(surfacetemp, bottomsal, MixedLayerDepth, CPE,
@@ -35,7 +36,4 @@ model.matrix(~0+., data=c_e) %>%
 model.matrix(~0+., data=p_e) %>% 
   cor(use="pairwise.complete.obs") %>% 
   ggcorrplot(show.diag=FALSE, type="lower", lab=TRUE, lab_size=2)
-
-## Calculate Variance Inflation Factors? ##
-library(mgcv)
 

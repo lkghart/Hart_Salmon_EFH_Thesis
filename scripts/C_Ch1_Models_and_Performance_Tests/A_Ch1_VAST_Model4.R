@@ -88,7 +88,7 @@ if(fit == TRUE){
                     getsd = FALSE,
                     newtonsteps = 1)
   
-  saveRDS(fit0, file.path(dir.work, paste0(spec, "_VAST_mod3_null.rds")))
+  saveRDS(fit0, file.path(dir.work, paste0(spec, "_VAST_mod4_null.rds")))
   
   # Plot Output ==================================================================
   plot(mod_fit); beep(sound=4)
