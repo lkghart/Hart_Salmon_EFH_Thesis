@@ -1,6 +1,6 @@
 ### Chapter 1 GAM Predictions (Response) 
 ## Author: Lilian Hart 
-## Last edited: 09/22/23
+## Last edited: 11/01/23
 
 require(tidyverse)
 require(dplyr)
@@ -13,15 +13,15 @@ library(remote)
 library(sf)
 
 ### Workflow ###
-species <- "Chinook Salmon"
-spec <- "chinook"
+Spec <- "Chum"
+spec <- tolower(Spec)
 fit <- TRUE
 
 if(fit == TRUE){
   dir.work <- here("data", "Chapter_1_RDS")
   setwd(dir.work)
   og <- readRDS("basis_subset.rds")
-  species <- species
+  species <- paste(Spec, "Salmon")
   dat <- og %>% filter(CommonName == species) %>% drop_na(CommonName,
                                                           Effort_area_km2,
                                                           TotalCatchNum,

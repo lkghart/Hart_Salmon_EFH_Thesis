@@ -12,13 +12,14 @@ require(FishStatsUtils)
 require(TMBhelper)
 require(TMB)
 
+# Set species
+spec <- "chum"
+
 # Set directories
 dir.data <- here("data", "BASIS")
 dir.work <- here("data", "Chapter_1_RDS")
 
 ## Workflow ##
-# Set species
-spec <- "chinook"
 years <- as.character(2002:2019)
 
 # Load model 1(static model)
@@ -39,7 +40,7 @@ CV_mod1 <- SE_mod1/means
 setwd(dir.work)
 saveRDS(CV_mod1, paste0(spec,"_VAST_mod1_CV.rds"))
 
-# Load est-performing dynamic model (model 4)
+# Load best-performing dynamic model (model 4)
 dyn_mod <- readRDS(file.path(dir.work,paste0(spec,"_VAST_mod4.rds")))
 dyn_mod <- VAST::reload_model(dyn_mod)
 

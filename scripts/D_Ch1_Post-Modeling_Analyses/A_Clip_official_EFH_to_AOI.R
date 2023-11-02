@@ -1,6 +1,6 @@
 ### Clip official EFH to AOI/user region ###
 # author: Lilian Hart
-# date last edited: 09/29/23
+# date last edited: 11/01/23
 
 require(sp)
 require(tidyverse)
@@ -36,12 +36,10 @@ for (i in 1:4){
   # Load in EFH shapefiles
   # Be sure to NOT include ".shp" in the layer name.
   spec_shp <- read_sf(dsn = dir.data, layer = paste0(Spec,"_juvenile_EFH_Level1"))
-  # Set/reaffirm CRS the modern way for EFH shapefiles
-  st_crs(spec_shp) <- 3857
-  # Set CRS or transform from geographic coordinate system (WGS84) to projected
+  # Set CRS/transform from geographic coordinate system (WGS84) to projected
   # (flat) coordinate system of UTM zone 33 N
   x <- st_transform(spec_shp, 32633)
-  st_crs(aoi_sf) <- st_crs(x)
+  aoi_sf <- st_transform(aoi_sf, 32633)
   
   # Clip using the sf intersect method
   spec_subset <- st_intersection(x, aoi_sf)
@@ -62,7 +60,7 @@ sockeye <- readRDS("official_sockeye_EFH_clipped.rds")
 # Map
 ggplot() +
   geom_sf(data = ak) +
-  geom_sf(data = chinook, color = "blue", fill = NA) +
+  geom_sf(data = chum, color = "blue", fill = NA) +
   # geom_sf(data = chum, color = "white", fill = NA) +
   #geom_sf(data = spec_shp, color = "red", fill = "red") +
   # geom_sf(data = sockeye, color = "orange", fill = NA) +

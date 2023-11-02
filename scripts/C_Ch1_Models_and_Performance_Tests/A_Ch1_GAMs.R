@@ -13,8 +13,8 @@ require(gratia)
 require(beepr)
 
 #### Setup ####
-species <- "Chum Salmon"
-spec <- "chum"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 fit <- TRUE
 
@@ -22,8 +22,8 @@ if(fit == TRUE){
   dir.work <- here("data", "Chapter_1_RDS")
   og <- readRDS(file.path(dir.work,"basis_subset.rds"))
   setwd(dir.work)
-  species <- species
-  
+  species <- paste(Spec, "Salmon")
+  og <- subset(og, select = -geometry)
   dat <- og %>% filter(CommonName == species) %>% drop_na(CommonName,
                                                           Effort_area_km2,
                                                           TotalCatchNum)
@@ -75,7 +75,7 @@ if(fit == TRUE){
   dir.work <- here("data", "Chapter_1_RDS")
   setwd(dir.work)
   
-  species <- "Chinook Salmon"
+  species <- paste(Spec, "Salmon")
   
   dat <- og %>% filter(CommonName == species) %>% drop_na(CommonName,
                                                           Effort_area_km2,
@@ -86,10 +86,10 @@ if(fit == TRUE){
   mod1 <- readRDS("chinook_gam_mod1.rds")
   mod2 <- readRDS("chinook_gam_mod2.rds")
   mod3 <- readRDS("chinook_gam_mod3.rds")
-  #mod4 <- readRDS("chinook_gam_mod4.rds")
+  mod4 <- readRDS("chinook_gam_mod4.rds")
 }
 
-## Diagnostics functions ##
+#### Diagnostics functions ####
 #visreg()
 #gam.check()
 
@@ -125,14 +125,14 @@ resids_map3 + scale_color_gradient2(low="#2986cc", mid = "white",
 high="#cc0000", midpoint=0,
 name = "Residual value")
 # 
-# mod4resids <- mod4$residuals
-# resids_map4 <- ggplot(data = dat, aes(x=EQ.Longitude,y=EQ.Latitude,color=mod4resids)) +
-#   geom_point() + 
-#   facet_wrap(~SampleYear, ncol = 7) +
-#   xlab("Longitude") + ylab("Latitude") +
-#   ggtitle("Model 4 Residual Map")
-# resids_map4 + scale_color_gradient2(low="#2986cc", mid = "white", 
-#                                     high="#cc0000", midpoint=0, 
-#                                     name = "Residual value")
+mod4resids <- mod4$residuals
+resids_map4 <- ggplot(data = dat, aes(x=EQ.Longitude,y=EQ.Latitude,color=mod4resids)) +
+  geom_point() +
+  facet_wrap(~SampleYear, ncol = 7) +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("Model 4 Residual Map")
+resids_map4 + scale_color_gradient2(low="#2986cc", mid = "white",
+                                    high="#cc0000", midpoint=0,
+                                    name = "Residual value")
 
 

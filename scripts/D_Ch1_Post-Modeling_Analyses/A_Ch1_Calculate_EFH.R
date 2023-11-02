@@ -12,9 +12,11 @@ require(ggplot2)
 require(FishStatsUtils)
 require(VAST)
 
+# Set species
+spec <- "chum"
+
 dir.dat <- here("data", "Chapter_1_RDS")
 dir.work <- here("data", "Chapter_1_EFH")
-spec <- "chinook"
 
 years <- c(2002:2019)
 
@@ -100,7 +102,7 @@ sites <- as.data.frame(vast1$extrapolation_list$Data_Extrap) %>%
 vast1 <- as.data.frame(vast1$Report$D_gct) %>% drop_units()
 colnames(vast1) <- years
 vast1 <- vast1[,1]
-vast1_CV <- readRDS(file.path(dir.dat, paste0(spec2, "VAST_mod1_CV.rds")))
+vast1_CV <- readRDS(file.path(dir.dat, paste0(spec, "_VAST_mod1_CV.rds")))
 colnames(vast1_CV) <- years
 test <- rowMeans(vast1_CV)
 a <- data.frame(Fit = vast1, CV = test, Lat = sites$Lat, Lon = sites$Lon)
@@ -172,8 +174,8 @@ for (i in 1:18){
   
 }
 # Save to RDS
-saveRDS(vast4_efh, file.path(dir.work, paste0(spec,"VAST_",mod,"_EFH.rds"))) 
-saveRDS(vast4b_efh, file.path(dir.work, paste0(spec,"VAST_",mod,"_EFH_50.rds"))) 
+saveRDS(vast4_efh, file.path(dir.work, paste0(spec,"_VAST_",mod,"_EFH.rds"))) 
+saveRDS(vast4b_efh, file.path(dir.work, paste0(spec,"_VAST_",mod,"_EFH_50.rds"))) 
 
 
 nrow(est4_V) # From 54,000 prediction points to

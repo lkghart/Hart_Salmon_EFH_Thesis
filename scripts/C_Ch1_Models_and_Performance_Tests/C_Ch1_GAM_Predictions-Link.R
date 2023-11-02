@@ -1,6 +1,6 @@
 ### Chapter 1 GAM Predictions- Link response
 ## Author: Lilian Hart 
-## Last edited: 09/22/23
+## Last edited: 11/01/23
 
 require(tidyverse)
 require(dplyr)
@@ -11,15 +11,16 @@ require(beepr)
 library(sf)
 
 ### Workflow ###
-species <- "Chinook Salmon"
-spec <- "chinook"
-fit <- FALSE
+Spec <- "Chum"
+spec <- tolower(Spec)
+
+fit <- TRUE
 
 if(fit == TRUE){
   dir.work <- here("data", "Chapter_1_RDS")
   setwd(dir.work)
   og <- readRDS("basis_subset.rds")
-  species <- species
+  species <- paste(Spec, "Salmon")
   dat <- og %>% filter(CommonName == species) %>% drop_na(CommonName,
                                                           Effort_area_km2,
                                                           TotalCatchNum,
@@ -95,10 +96,10 @@ if(fit == TRUE){
   
   ## Model 3 - Dynamic model with autocorrelated annual spatial fields
   # Create array to hold predictions
-  pred_4 <- data.frame()
+  pred_3 <- data.frame()
   
   for(i in 1:n_years){
-    temp_pred <-  predict(mod4, 
+    temp_pred <-  predict(mod3, 
                           newdata = data.frame(EQ.Longitude = p_grid$Lon, 
                                                EQ.Latitude = p_grid$Lat, 
                                                fSampleYear = years[i],
@@ -117,16 +118,16 @@ if(fit == TRUE){
     temp_df$CV <- temp_df$SE.Fit / (mean(temp_df$Fit))
     
     print(years[i])
-    pred_4 <- rbind(pred_4, temp_df)
+    pred_3 <- rbind(pred_3, temp_df)
   } 
-  saveRDS(pred_4, file.path(dir.work, paste0(Spec,"_GAM_Mod4_Predictions_Link.rds")))
+  saveRDS(pred_3, file.path(dir.work, paste0(Spec,"_GAM_Mod3_Predictions_Link.rds")))
   
   ## Model 4 - Dynamic model with independent annual spatial fields
   # Create array to hold predictions
   pred_4 <- data.frame()
 
   for(i in 1:n_years){
-    temp_pred <-  predict(mo43,
+    temp_pred <-  predict(mod4,
                           newdata = data.frame(EQ.Longitude = p_grid$Lon,
                                                EQ.Latitude = p_grid$Lat,
                                                fSampleYear = years[i],

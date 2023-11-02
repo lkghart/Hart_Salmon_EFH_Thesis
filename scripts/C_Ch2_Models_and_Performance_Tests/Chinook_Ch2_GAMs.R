@@ -1,6 +1,6 @@
-### Chapter 2 GAMs, Chinook ###
+### Chapter 2 GAMs ###
 # author: Lilian Hart
-# date last modified: 06/13/23
+# date last modified: 11/02/23
 
 require(dplyr)
 require(tidyverse)
@@ -10,16 +10,16 @@ require(visreg)
 require(gratia)
 
 ### Workflow ###
-fit <- FALSE
+fit <- TRUE
 ###
-Spec <- "Chinook Salmon"
-spec <- "chinook"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 #Load data
 dir.work <- here::here("data", "Chapter_2_RDS")
 dir.dat <- here::here("data", "BASIS")
 og <- readRDS(file=paste0(dir.dat, "/Ch2_dataframe.rds"))
-dat <- og %>% filter(CommonName == Spec)
+dat <- og %>% filter(CommonName == paste(Spec, "Salmon"))
 dat$Climate_stanza <- as.factor(dat$Climate_stanza)
 
 # Save factor versions 

@@ -10,18 +10,21 @@ require(FishStatsUtils)
 require(units)
 require(beepr)
 
+# Set sepcies
+spec <- "chum"
+
 dir.data <- here("data", "BASIS")
 dir.work <- here("data", "Chapter_1_RDS")
 
 ## Load models
-mod1 <- readRDS(file.path(dir.work,"chinook_VAST_mod1.rds"))
-mod2 <- readRDS(file.path(dir.work, "chinook_VAST_mod2.rds"))
-mod3 <- readRDS(file.path(dir.work, "chinook_VAST_mod3.rds"))
-mod4 <- readRDS(file.path(dir.work, "chinook_VAST_mod4.rds"))
-mod1_0 <- readRDS(file.path(dir.work, "chinook_VAST_mod1_null.rds"))
-mod2_0 <- readRDS(file.path(dir.work, "chinook_VAST_mod2_null.rds"))
-mod3_0 <- readRDS(file.path(dir.work, "chinook_VAST_mod3_null.rds"))
-mod4_0 <- readRDS(file.path(dir.work, "chinook_VAST_mod4_null.rds"))
+mod1 <- readRDS(file.path(dir.work,paste0(spec, "_VAST_mod1.rds")))
+mod2 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod2.rds")))
+mod3 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod3.rds")))
+mod4 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod4.rds")))
+mod1_0 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod1_null.rds")))
+mod2_0 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod2_null.rds")))
+mod3_0 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod3_null.rds")))
+mod4_0 <- readRDS(file.path(dir.work, paste0(spec, "_VAST_mod4_null.rds")))
 
 ## Calculate percent deviance explained
 (p1 <- 1-mod1$Report$deviance/mod1_0$Report$deviance) 

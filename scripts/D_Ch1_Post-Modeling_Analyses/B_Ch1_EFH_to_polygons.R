@@ -18,8 +18,8 @@ require(geosphere)
 require(sp)
 require(rgdal)
 
-spec <- "Chinook"
-spec2 <- "chinook"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 ## Set directories
 dir.data <- here("data", "Chapter_1_EFH")
@@ -35,7 +35,7 @@ G_1_sf <- st_as_sf(G_1, coords = c("Lon", "Lat"), crs = 4326)
 V_1_sf <- st_as_sf(V_1, coords = c("Lon", "Lat"), crs = 4326)
 
 #### Convert to polygons and save ####
-G1_poly <- concaveman(G_1_sf, concavity = 7)
-saveRDS(G1_poly, file = file.path(dir.data, paste0(spec2,"_gam_mod1_EFH_poly.rds")))
-V1_poly <- concaveman(V_1_sf, concavity = 7)
-saveRDS(V1_poly, file = file.path(dir.data, paste0(spec2,"_vast_mod1_EFH_poly.rds")))
+G1_poly <- concaveman(G_1_sf, concavity = 2)
+saveRDS(G1_poly, file = file.path(dir.data, paste0(spec,"_gam_mod1_EFH_poly.rds")))
+V1_poly <- concaveman(V_1_sf, concavity = 2)
+saveRDS(V1_poly, file = file.path(dir.data, paste0(spec,"_vast_mod1_EFH_poly.rds")))

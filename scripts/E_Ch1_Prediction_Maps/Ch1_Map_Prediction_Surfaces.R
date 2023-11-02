@@ -21,12 +21,13 @@ require(FishStatsUtils)
 require(akgfmaps)
 
 spec <- "Chinook"
-spec2 <- "chinook"
+spec2 <- tolower(Spec)
 
 #### Setup ####
 dir.data <- here("data", "BASIS")
 dir.work <- here("data", "Chapter_1_RDS")
 dir.shelf <- file.path("~/Documents/AK_Shapefiles")
+# Local figures folder
 dir.fig <- file.path("~/Documents/Salmon_EFH_Deliverables/Chapter1_Figures/V4_Figs/Comparisons")
 
 ### Load in mapping attributes ###

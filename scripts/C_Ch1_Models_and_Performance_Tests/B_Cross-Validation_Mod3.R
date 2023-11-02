@@ -7,8 +7,8 @@
 
 # Set species
 # Note: if running spatiotemporal models for sockeye, change k value to k = 8
-Spec <- "Sockeye"
-spec <- "sockeye"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 ## Load packages
 library(TMB)
@@ -19,7 +19,7 @@ library(dplyr)
 library(mgcv)
 library(tweedie)
 
-## Set local working directory (change for your machine)
+## Set local working directory 
 dir.res <- here("data", "Chapter_1_RDS", "Chapter_1_CrossVal", spec, "Mod_3")
 dir.create(dir.res, recursive=TRUE)
 dir.dat <- here("data", "Chapter_1_RDS")

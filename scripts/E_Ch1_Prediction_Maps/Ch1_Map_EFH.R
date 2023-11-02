@@ -1,6 +1,6 @@
 #### Chapter 1 EFH Maps ####
 # author: Lilian Hart
-# date last edited: 10/31/23
+# date last edited: 11/02/23
 
 require(tidyverse)
 require(dplyr)
@@ -16,8 +16,8 @@ require(ggspatial)
 require(beepr)
 require(akgfmaps)
 
-spec <- "Chinook"
-spec2 <- "chinook"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 # Set directories
 dir.data <- here("data", "Chapter_1_EFH")
@@ -26,10 +26,10 @@ dir.shelf <- file.path("~/Documents/AK_Shapefiles")
 dir.fig <- file.path("~/Documents/Salmon_EFH_Deliverables/Chapter1_Figures/Manuscript")
 
 # Load official EFH shapefiles
-official <- readRDS(file.path(dir.data, paste0("official_", spec2, "_EFH_clipped.rds")))
+official <- readRDS(file.path(dir.data, paste0("official_", spec, "_EFH_clipped.rds")))
 # Load model prediction polygons of static 95% EFH
-gam1 <- readRDS(file.path(dir.data, paste0(spec2,"_gam_mod1_EFH_poly.rds")))
-vast1 <- readRDS(file.path(dir.data, paste0(spec2,"_vast_mod1_EFH_poly.rds")))
+gam1 <- readRDS(file.path(dir.data, paste0(spec,"_gam_mod1_EFH_poly.rds")))
+vast1 <- readRDS(file.path(dir.data, paste0(spec,"_vast_mod1_EFH_poly.rds")))
 
 # Load point predictions 
 EFH50_1_G <- readRDS(file.path(dir.data, paste0(spec, "_GAM_Mod1_EFH_50.rds")))
@@ -110,7 +110,7 @@ ggplot() +
         strip.text=element_text(size=18),
         title = element_text(size = 18)) +
   labs(x = "Longitude", y = "Latitude", 
-       title = paste(spec,"salmon"))
+       title = paste(Spec,"salmon"))
 
 # Save figure 
 ggsave(device = "jpeg", height = 5, width = 5,
@@ -160,7 +160,7 @@ ggplot() +
         strip.text=element_text(size=18),
         title = element_text(size = 18)) +
   labs(x = "Longitude", y = "Latitude", 
-       title = paste(spec,"salmon"))
+       title = paste(Spec,"salmon"))
 
 # Save figure 
 ggsave(device = "jpeg", height = 5, width = 5,
@@ -194,7 +194,7 @@ ggplot() +
         strip.text=element_text(size=18),
         title = element_text(size = 18)) +
   labs(x = "Longitude", y = "Latitude", 
-       title = paste(spec,"salmon"))
+       title = paste(Spec,"salmon"))
 
 ggsave(device = "jpeg", height = 12, width = 10,
        path = dir.fig, filename = paste0(spec,"_mod4_EFH_comparison.jpeg")); beep()
@@ -227,7 +227,7 @@ ggplot() +
         strip.text=element_text(size=18),
         title = element_text(size = 18)) +
   labs(x = "Longitude", y = "Latitude", 
-       title = paste(spec,"salmon"))
+       title = paste(Spec,"salmon"))
 
 ggsave(device = "jpeg", height = 12, width = 10,
        path = dir.fig, filename = paste0(spec,"_mod450_EFH_comparison.jpeg")); beep()

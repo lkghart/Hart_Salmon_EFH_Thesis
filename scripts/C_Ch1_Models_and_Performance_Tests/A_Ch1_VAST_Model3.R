@@ -12,13 +12,13 @@ require(units)
 require(beepr)
 
 #### Setup ####
-species <- "Chum Salmon"
-spec <- "chum"
+species <- "Chum"
+spec <- tolower(Spec)
 
 fit <- TRUE
 
 if(fit == TRUE){
-  species <- species
+  species <- paste0(Spec, "Salmon")
   dir.data <- here("data", "BASIS")
   dir.work <- here("data", "Chapter_1_RDS")
   dir.vast <- here("data", "Chapter_1_RDS", "VAST", spec, "Mod_3")

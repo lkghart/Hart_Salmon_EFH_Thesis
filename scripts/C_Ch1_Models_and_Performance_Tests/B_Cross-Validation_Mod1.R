@@ -3,11 +3,11 @@
 # With a great deal of contribution from James Thorson's tutorial in the VAST wiki.
 # Tutorial: https://github.com/James-Thorson-NOAA/VAST/wiki/Crossvalidation
 
-# Date last edited: 09/29/23
+# Date last edited: 10/31/23
 
 # Set species
-Spec <- "Chinook"
-spec <- "chinook"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 ## Load packages
 library(TMB)
@@ -18,7 +18,7 @@ library(dplyr)
 library(mgcv)
 library(tweedie)
 
-## Set local working directory (change for your machine)
+## Set local working directory 
 dir.res <- here("data", "Chapter_1_RDS", "Chapter_1_CrossVal", spec, "Mod_1")
 dir.create(dir.res, recursive=TRUE)
 setwd(dir.res)

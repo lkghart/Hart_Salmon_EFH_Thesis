@@ -13,12 +13,12 @@ require(beepr)
 
 #### Setup ####
 fit <- TRUE
-species <- "Chum Salmon"
-spec <- "chum"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 if (fit == TRUE){
 
-  species <- species
+  species <- paste(Spec, "Salmon")
   
   # Number of knots (i.e. spatial complexity)
   n_x <- 300
