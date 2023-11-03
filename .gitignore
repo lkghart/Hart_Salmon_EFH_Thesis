@@ -46,3 +46,6 @@ vignettes/*.pdf
 
 # Ignore .DS_Store
 .DS_Store
+
+# Ignore BASIS data folder
+/data/BASIS/*
