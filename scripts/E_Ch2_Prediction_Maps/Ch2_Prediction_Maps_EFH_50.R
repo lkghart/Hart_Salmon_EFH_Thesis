@@ -1,6 +1,6 @@
-### Chinook Chapter 2 GAM Top 50% of Predictions Maps (response) 
+### Chapter 2 GAM Top 50% of Predictions Maps (response) 
 ## Author: Lilian Hart 
-## Last edited: 09/19/23
+## Last edited: 11/06/23
 
 require(tidyverse)
 require(dplyr)
@@ -11,14 +11,15 @@ require(visreg)
 require(beepr)
 library(rnaturalearth)
 library(rnaturalearthhires)
-library(gganimate)
 library(sf)
 library(rnaturalearthdata)
 require(ggspatial)
+require(akgfmaps)
 
 #### Setup ####
-Spec <- "Pink"
-spec <- "pink"
+Spec <- "Chum"
+spec <- tolower(Spec)
+
 dir.work <- here("data", "Chapter_2_EFH")
 dir.mod <- here("data", "Chapter_2_RDS")
 setwd(dir.work)
@@ -62,10 +63,9 @@ russia <- st_set_crs(russia, 4326)
 rivers <- st_read(file.path(dir.shelf, "USA_Major_Rivers/v10/rivers.gdb"))
 riv <- rivers %>% filter(NAME == "Kuskokwim" | NAME == "Yukon" |
                            NAME == "Koyukuk" | NAME == "Stikine")
-shelf <- st_read(file.path(dir.shelf, "arctic_coast_bathy/arctic_coast_bathy.shp"))
-shelfb <- select(shelf, elevation, geometry) %>% 
-  filter(elevation == -105 | elevation == -55)
-shelfb <- st_transform(shelfb, 4326)
+shelf <- get_survey_bathymetry(select.region = "ebs", set.crs = 4326)
+ebs_layers <- akgfmaps::get_base_layers(select.region = "ebs", set.crs = 4326)
+shelfb <- ebs_layers$bathymetry
 cshelf <- st_read(file.path(dir.shelf, "AK_CSB.gdb"))
 
 ## Convert predictions to sf objects
@@ -132,20 +132,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -168,20 +178,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -210,20 +230,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -247,20 +277,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -284,20 +324,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -320,20 +370,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -360,20 +420,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -398,20 +468,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -436,20 +516,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -473,20 +563,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -510,20 +610,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -548,20 +658,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),
@@ -585,20 +705,30 @@ ggplot() +
            ylim = c(400000, 1900000), expand = FALSE, 
            datum = st_crs(4326))+
   scale_x_continuous(breaks = c(seq(-180 , -125, by = 7))) +
-  annotate("text", label = "100 m", x=-900000, y=750000, color = "white",
-           size = 4) +
-  annotate("text", label = "50 m", x=-550000, y=770000, color = "white",
-           size = 4) +
-  annotate("text", label = "Continental Shelf", x=-1550000, y=1250000, 
-           color = "white", size = 4, angle = 25) +
+  annotate("text", label = "50 m", x=-760000, y=1100000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "100 m", x=-940000, y=980000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "200 m", x=-1080000, y=930000, color = "white",
+           size = 3, angle = 310) +
+  annotate("text", label = "Norton Sound", x=-500000, y=1600000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Lawrence Isl.", x=-810000, y=1665000,
+           color = "black", size = 3) +
+  annotate("text", label = "St. Matthew Isl.", x=-980000, y=1350000,
+           color = "black", size = 3) +
+  annotate("text", label = "Nunivak Isl.", x=-750000, y=1240000,
+           color = "black", size = 3) +
   annotate("text", label = "Yukon", x=-240000, y=1500000, color = "black",
-           size = 4, angle = 57) +
+           size = 3, angle = 57) +
   annotate("text", label = "Kuskokwim", x=-270000, y=1240000, color = "black",
-           size = 4, angle = 22) +
+           size = 3, angle = 22) +
   annotate("text", label = "Bristol\n Bay", x=-340000, y=870000, color = "black",
-           size = 4) +
-  annotate("text", label = "Unimak Pass", x=-650000, y=450000, color = "black",
-           size = 4) +
+           size = 3) +
+  annotate("text", label = "Unimak P.", x=-615000, y=480000, color = "black",
+           size = 3, angle = 330) +
+  annotate("text", label = "False Pass", x=-500000, y=495000,
+           color = "black", size = 3, angle = 330) +
   theme(axis.title=element_text(size=18),
         axis.text=element_text(size=15),
         strip.text=element_text(size=18),

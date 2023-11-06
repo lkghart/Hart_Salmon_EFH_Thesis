@@ -1,6 +1,6 @@
 #### Converting static EFH (Model 1) prediction points to polygons for mapping ####
 # author: Lilian Hart
-# date last edited: 09/19/23
+# date last edited: 11/06/23
 
 require(tidyverse)
 require(dplyr)
@@ -11,13 +11,14 @@ require(ggplot2)
 require(rnaturalearth)
 require(rnaturalearthhires)
 require(sf)
+require(sp)
 require(rnaturalearthdata)
 require(ggspatial)
 require(concaveman)
 require(geosphere)
 
-spec <- "Sockeye"
-spec2 <- "sockeye"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 ## Set directories
 dir.data <- here("data", "Chapter_2_EFH")
@@ -25,8 +26,8 @@ dir.work <- here("data", "Chapter_2_RDSModels")
 
 #### Load model predictions of 95% EFH and core EFH ####
 # Model 1 
-G_1 <- readRDS(file.path(dir.data, paste0(spec2, "_gam_in-situ_EFH.rds")))
-G_150 <- readRDS(file.path(dir.data, paste0(spec2, "_gam_in-situ_EFH_50.rds")))
+G_1 <- readRDS(file.path(dir.data, paste0(spec, "_gam_in-situ_EFH.rds")))
+G_150 <- readRDS(file.path(dir.data, paste0(spec, "_gam_in-situ_EFH_50.rds")))
 
 # Convert to shapefile
 G_1_sf <- st_as_sf(G_1, coords = c("Lon", "Lat"), crs = 4326)

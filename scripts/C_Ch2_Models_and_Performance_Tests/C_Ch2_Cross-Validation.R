@@ -1,10 +1,10 @@
-### Chapter 2 K-fold Cross Validation ###
+### Chapter 2 10-fold Cross Validation ###
 # authors: Lilian Hart and Curry Cunningham
 # Date last edited: 06/22/23
 
 # Set species
-Spec <- "Sockeye"
-spec <- "sockeye"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 ## Load packages
 library(here)
@@ -15,7 +15,7 @@ library(tweedie)
 
 #### Settings ####
 ## Set local working directory (change for your machine)
-setwd(here("data", "Chapter_2_CrossVal"))
+setwd(here("data", "Chapter_2_RDS", "Chapter_2_CrossVal"))
 dir.mod <- here("data", "Chapter_2_RDS")
 dir.dat <- here::here("data", "BASIS")
 ## Load data
@@ -609,7 +609,7 @@ saveRDS(res4, paste0("nll_", spec, "_mod4C_results"))
 
 
 #### Load results ####
-dir.res <- here("data", "Chapter_2_CrossVal")
+dir.res <- here("data", "Chapter_2_RDS", "Chapter_2_CrossVal")
 mod0 <- readRDS(paste0(dir.res,"/nll_", spec, "_mod0_results"))
 mod1A <- readRDS(paste0(dir.res, "/nll_", spec, "_mod1A_results"))
 mod2A <- readRDS(paste0(dir.res, "/nll_", spec, "_mod2A_results"))

@@ -1,6 +1,6 @@
-### Chinook Chapter 2 GAM Predictions (response) 
+### Chapter 2 GAM Predictions (in response space) 
 ## Author: Lilian Hart 
-## Last edited: 06/07/23
+## Last edited: 11/06/23
 
 require(tidyverse)
 require(dplyr)
@@ -8,8 +8,8 @@ require(here)
 require(mgcv)
 
 ### Load Data ###
-Spec <- "Chinook"
-spec <- "chinook"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 dir.work <- here("data", "Chapter_2_RDS")
 setwd(dir.work)
@@ -24,7 +24,7 @@ dat$Climate_stanza <- factor(dat$Climate_stanza)
 dat$Even_odd_year <- factor(dat$Even_odd_year)
 
 ### Workflow ###
-fit <- FALSE
+fit <- TRUE
 
 #### Model Fitting and Prediction ####
 if(fit == TRUE){
@@ -33,7 +33,7 @@ if(fit == TRUE){
   gam.control(maxit=3600)
   
   # Load prediction grid, save as dataframe.
-  p_grid <- readRDS(file.path(dir.work,"prediction_grid2.rds"))
+  p_grid <- readRDS(file.path(dir.work,"gam_prediction_grid.rds"))
   p_grid <- data.frame(p_grid)
   
   ## Model Inputs ##

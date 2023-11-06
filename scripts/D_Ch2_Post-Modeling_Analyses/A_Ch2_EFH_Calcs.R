@@ -1,4 +1,4 @@
-### Chinook Ch2 EFH Calculation Script ###
+### Ch2 EFH Calculation Script ###
 # author: Lilian Hart
 # date last edited: 06/07/23
 
@@ -13,8 +13,8 @@ require(ggplot2)
 dir.dat <- here("data", "Chapter_2_RDS")
 dir.work <- here("data", "Chapter_2_EFH")
 
-Spec <- "Chinook Salmon"
-spec <- "chinook"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 ## GAM EFH Calculations ##
 #### Model 1A - In-Situ Environmental Covariates EFH ####

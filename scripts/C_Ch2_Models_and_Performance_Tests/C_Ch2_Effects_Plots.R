@@ -1,6 +1,6 @@
-### Coho Chapter 2 GAM Effects plots
+### Chapter 2 GAM Effects plots
 ## Author: Lilian Hart 
-## Last edited: 08/21/23
+## Last edited: 11/06/23
 
 require(tidyverse)
 require(dplyr)
@@ -17,7 +17,7 @@ require(rnaturalearthhires)
 require(mmtable2)
 
 Spec <- "Chum"
-spec <- "chum"
+spec <- tolower(Spec)
 
 #### Setup ####
 dir.mod <- here("data", "Chapter_2_RDS")

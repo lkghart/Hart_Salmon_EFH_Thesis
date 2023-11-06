@@ -11,8 +11,8 @@ require(gratia)
 require(sf)
 require(SDMTools)
 
-Spec <- "Sockeye"
-spec <- "sockeye"
+Spec <- "Chum"
+spec <- tolower(Spec)
 
 #### Setup ####
 dir.mod <- here("data", "Chapter_2_EFH")

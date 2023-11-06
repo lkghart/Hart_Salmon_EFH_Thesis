@@ -13,3 +13,4 @@ spec_VAST_CV.rds changed to spec,"_VAST_dynamic_model_CV.rds"))
 ## Note to self for Monday
 Figure out how to untrack files
 find . -name /data/BASIS/* -print0 | xargs -0 git rm -f --ignore-unmatch
+https://stackoverflow.com/questions/24290358/remove-a-folder-from-git-tracking
